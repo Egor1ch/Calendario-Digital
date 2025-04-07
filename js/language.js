@@ -2,8 +2,8 @@
 const translations = {
     es: {
         // General
-        title: "Calendario Interactivo",
-        calendar: "Calendario",
+        title: "Calendario Digital",
+        calendar: "Calendario Digital",
         createEvent: "Crear evento",
         today: "Hoy",
         
@@ -15,7 +15,7 @@ const translations = {
         hour: "Hora",
         
         // Categorías
-        myCalendars: "Mis calendarios",
+        myCalendars: "Categorías",
         events: "Eventos",
         tasks: "Tareas",
         parties: "Fiestas",
@@ -45,7 +45,7 @@ const translations = {
         title_field: "Título",
         date: "Fecha",
         time: "Hora",
-        category: "Categoría",
+        category: "Categorías",
         description: "Descripción",
         save: "Guardar",
         delete: "Eliminar",
@@ -61,8 +61,8 @@ const translations = {
     },
     en: {
         // General
-        title: "Interactive Calendar",
-        calendar: "Calendar",
+        title: "Digital Calendar",
+        calendar: "Digital Calendar",
         createEvent: "Create event",
         today: "Today",
         
@@ -74,7 +74,7 @@ const translations = {
         hour: "Hour",
         
         // Categorías
-        myCalendars: "My calendars",
+        myCalendars: "Categories",
         events: "Events",
         tasks: "Tasks",
         parties: "Parties",

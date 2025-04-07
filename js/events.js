@@ -4,7 +4,7 @@ let currentEditingEvent = null;
 
 // Inicialización
 document.addEventListener('DOMContentLoaded', () => {
-    // Cargar eventos desde localStorage
+    // Cargar eventos desde la base de datos
     loadEvents();
     
     // Event listener para botón de crear evento desde la barra lateral
@@ -29,16 +29,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Configurar los filtros de categoría
 function setupCategoryFilters() {
-    const categoryCheckboxes = document.querySelectorAll('.category-item input[type="checkbox"]');
-    
-    categoryCheckboxes.forEach(checkbox => {
+    // Se añadirán event listeners dinámicamente al cargar las categorías
+    document.querySelectorAll('.category-item input[type="checkbox"]').forEach(checkbox => {
         checkbox.addEventListener('change', () => {
             filterEventsByCategory();
         });
     });
 }
 
-// Función para filtrar eventos por categoría (actualizada para incluir vista de año)
+// Función para filtrar eventos por categoría (actualizada para incluir categorías personalizadas)
 function filterEventsByCategory() {
     const checkedCategories = Array.from(document.querySelectorAll('.category-item input[type="checkbox"]:checked'))
         .map(checkbox => checkbox.id.replace('cat-', ''));
@@ -46,10 +45,21 @@ function filterEventsByCategory() {
     // Para eventos en la vista mensual
     document.querySelectorAll('.event').forEach(eventEl => {
         const category = eventEl.dataset.category;
-        const matchCategory = (category === 'event' && checkedCategories.includes('events')) ||
-                             (category === 'task' && checkedCategories.includes('tasks')) ||
-                             (category === 'party' && checkedCategories.includes('parties')) ||
-                             (category === 'personal' && checkedCategories.includes('personal'));
+        let matchCategory = false;
+        
+        // Verificar categorías por defecto
+        if ((category === 'event' && checkedCategories.includes('events')) ||
+            (category === 'party' && checkedCategories.includes('parties'))) {
+            matchCategory = true;
+        }
+        
+        // Verificar categorías personalizadas
+        if (category.startsWith('custom_')) {
+            const catId = category.replace('custom_', '');
+            if (checkedCategories.includes(`custom-${catId}`)) {
+                matchCategory = true;
+            }
+        }
         
         eventEl.style.display = matchCategory ? 'block' : 'none';
     });
@@ -61,50 +71,61 @@ function filterEventsByCategory() {
     }
 }
 
-// Obtener el nombre de categoría a partir del ID
-function getCategoryFromId(id) {
-    switch(id) {
-        case 'events':
-            return 'event';
-        case 'tasks':
-            return 'task';
-        case 'parties':
-            return 'party';
-        case 'personal':
-            return 'personal';
-        default:
-            return '';
-    }
-}
-
-// Mostrar u ocultar eventos según la categoría
-function toggleCategoryVisibility(category, isVisible) {
-    document.querySelectorAll(`.event[data-category="${category}"]`).forEach(event => {
-        event.style.display = isVisible ? 'block' : 'none';
-    });
-}
-
-// Cargar eventos desde localStorage
+// Cargar eventos desde el servidor
 function loadEvents() {
-    const storedEvents = localStorage.getItem('calendarEvents');
-    if (storedEvents) {
-        events = JSON.parse(storedEvents);
-        
-        // Convertir strings de fecha a objetos Date
-        events.forEach(event => {
-            event.date = new Date(event.date);
+    fetch('api/event_actions.php?action=getAll')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Convertir los datos de eventos a nuestro formato
+                events = data.events.map(event => {
+                    // Crear objeto Date a partir de la fecha y hora
+                    const dateStr = event.fecha;
+                    const timeStr = event.hora || '00:00:00';
+                    const [year, month, day] = dateStr.split('-').map(num => parseInt(num));
+                    const [hours, minutes, seconds] = timeStr.split(':').map(num => parseInt(num));
+                    
+                    return {
+                        id: event.id.toString(),
+                        title: event.titulo,
+                        date: new Date(year, month - 1, day, hours, minutes, seconds),
+                        category: event.categoria,
+                        description: event.descripcion || ''
+                    };
+                });
+                
+                // Actualizar la interfaz
+                renderEvents();
+            } else {
+                console.error('Error al cargar eventos:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error al realizar la petición:', error);
+            
+            // Si hay error, intentar cargar desde localStorage como respaldo
+            const storedEvents = localStorage.getItem('calendarEvents');
+            if (storedEvents) {
+                events = JSON.parse(storedEvents);
+                
+                // Convertir strings de fecha a objetos Date
+                events.forEach(event => {
+                    if (typeof event.date === 'string') {
+                        event.date = new Date(event.date);
+                    }
+                });
+                
+                renderEvents();
+            }
         });
-        
-        renderEvents();
-    }
 }
 
-// Guardar eventos en localStorage
-function saveEvents() {
+// Guardar eventos en localStorage (ahora solo como respaldo)
+function saveEventsLocally() {
     localStorage.setItem('calendarEvents', JSON.stringify(events));
 }
 
-// Renderizar eventos en el calendario
+// Renderizar eventos en el calendario (actualizada para categorías personalizadas)
 function renderEvents() {
     // Limpiar eventos existentes
     document.querySelectorAll('.events').forEach(container => {
@@ -124,6 +145,13 @@ function renderEvents() {
             eventElement.dataset.category = event.category;
             eventElement.textContent = event.title;
             
+            // Aplicar color específico si es una categoría personalizada
+            if (event.category.startsWith('custom_') && typeof getCategoryColor === 'function') {
+                const color = getCategoryColor(event.category);
+                eventElement.style.backgroundColor = color;
+                eventElement.style.color = isLightColor(color) ? 'black' : 'white';
+            }
+            
             eventElement.addEventListener('click', (e) => {
                 e.stopPropagation();
                 showEventModal(event);
@@ -134,7 +162,7 @@ function renderEvents() {
     });
 }
 
-// Renderizar eventos en la vista semanal mejorada
+// Renderizar eventos en la vista semanal mejorada (actualizada para categorías personalizadas)
 function renderEventsInWeekView() {
     // Limpiar eventos existentes
     document.querySelectorAll('.week-event').forEach(el => el.remove());
@@ -153,6 +181,13 @@ function renderEventsInWeekView() {
                 eventElement.classList.add('event', 'week-event');
                 eventElement.dataset.id = event.id;
                 eventElement.dataset.category = event.category;
+                
+                // Aplicar color específico si es una categoría personalizada
+                if (event.category.startsWith('custom_') && typeof getCategoryColor === 'function') {
+                    const color = getCategoryColor(event.category);
+                    eventElement.style.backgroundColor = color;
+                    eventElement.style.color = isLightColor(color) ? 'black' : 'white';
+                }
                 
                 // Calcular altura y posición según duración
                 let durationMinutes = 60; // Por defecto, 1 hora
@@ -189,7 +224,7 @@ function renderEventsInWeekView() {
     });
 }
 
-// Renderizar eventos en la vista diaria mejorada
+// Renderizar eventos en la vista diaria mejorada (actualizada para categorías personalizadas)
 function renderEventsInDayView() {
     // Limpiar eventos existentes
     document.querySelectorAll('.day-event').forEach(el => el.remove());
@@ -222,6 +257,13 @@ function renderEventsInDayView() {
                 eventElement.classList.add('event', 'day-event');
                 eventElement.dataset.id = event.id;
                 eventElement.dataset.category = event.category;
+                
+                // Aplicar color específico si es una categoría personalizada
+                if (event.category.startsWith('custom_') && typeof getCategoryColor === 'function') {
+                    const color = getCategoryColor(event.category);
+                    eventElement.style.backgroundColor = color;
+                    eventElement.style.color = isLightColor(color) ? 'black' : 'white';
+                }
                 
                 // Formatear hora
                 const timeStr = event.date.toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'});
@@ -321,37 +363,105 @@ function handleEventSubmit(e) {
     const [hours, minutes] = timeStr.split(':').map(num => parseInt(num));
     const date = new Date(year, month - 1, day, hours, minutes);
     
+    // Crear formData para enviar al servidor
+    const formData = new FormData();
+    
     if (currentEditingEvent) {
         // Actualizar evento existente
-        currentEditingEvent.title = title;
-        currentEditingEvent.date = date;
-        currentEditingEvent.category = category;
-        currentEditingEvent.description = description;
+        formData.append('action', 'update');
+        formData.append('id', currentEditingEvent.id);
     } else {
         // Crear nuevo evento
-        const newEvent = {
-            id: Date.now().toString(),
-            title,
-            date,
-            category,
-            description
-        };
-        
-        events.push(newEvent);
+        formData.append('action', 'create');
     }
     
-    // Guardar y actualizar
-    saveEvents();
-    updateCalendar();
-    hideEventModal();
+    // Añadir resto de datos del evento
+    formData.append('title', title);
+    formData.append('date', dateStr);
+    formData.append('time', timeStr);
+    formData.append('category', category);
+    formData.append('description', description);
+    
+    // Enviar datos al servidor
+    fetch('api/event_actions.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            if (currentEditingEvent) {
+                // Actualizar evento en el array
+                const index = events.findIndex(ev => ev.id === currentEditingEvent.id);
+                if (index !== -1) {
+                    events[index] = {
+                        id: currentEditingEvent.id,
+                        title,
+                        date,
+                        category,
+                        description
+                    };
+                }
+            } else {
+                // Añadir nuevo evento al array
+                const newEvent = {
+                    id: data.event.id.toString(),
+                    title,
+                    date,
+                    category,
+                    description
+                };
+                events.push(newEvent);
+            }
+            
+            // Guardar en localStorage como respaldo
+            saveEventsLocally();
+            
+            // Actualizar calendario
+            updateCalendar();
+            hideEventModal();
+        } else {
+            alert('Error: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al guardar el evento. Inténtalo de nuevo.');
+    });
 }
 
 // Eliminar evento
 function deleteEvent() {
     if (currentEditingEvent) {
-        events = events.filter(event => event.id !== currentEditingEvent.id);
-        saveEvents();
-        updateCalendar();
-        hideEventModal();
+        // Crear formData para enviar al servidor
+        const formData = new FormData();
+        formData.append('action', 'delete');
+        formData.append('id', currentEditingEvent.id);
+        
+        // Enviar petición al servidor
+        fetch('api/event_actions.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Eliminar evento del array
+                events = events.filter(event => event.id !== currentEditingEvent.id);
+                
+                // Guardar en localStorage como respaldo
+                saveEventsLocally();
+                
+                // Actualizar calendario
+                updateCalendar();
+                hideEventModal();
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al eliminar el evento. Inténtalo de nuevo.');
+        });
     }
 }

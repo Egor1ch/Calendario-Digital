@@ -227,20 +227,7 @@ function renderMiniCalendar() {
 
 // Actualizar el calendario según la vista actual
 function updateCalendar() {
-    updateHeader();
-    
-    // Asegurarse de que solo la vista actual esté visible
-    document.querySelectorAll('.calendar-view').forEach(view => {
-        view.classList.remove('active');
-        view.style.display = 'none';
-    });
-    
-    const activeView = document.getElementById(`${currentView}-view`);
-    activeView.classList.add('active');
-    activeView.style.display = 'block';
-    
-    // Renderizar la vista actual
-    switch(currentView) {
+    switch (currentView) {
         case 'year':
             renderYearView();
             break;
@@ -254,8 +241,13 @@ function updateCalendar() {
             renderDayView();
             break;
     }
-    
-    renderMiniCalendar();
+    // Renderizar eventos en vista activa
+    renderEvents();
+    if (currentView === 'week') {
+        renderEventsInWeekView();
+    } else if (currentView === 'day') {
+        renderEventsInDayView();
+    }
 }
 
 // Actualizar el encabezado del calendario
@@ -267,7 +259,11 @@ function updateHeader() {
         displayText = `Año ${currentDate.getFullYear()}`;
     } else {
         // Mantener el formato actual para otras vistas
-        displayText = currentDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+        const monthNames = [
+            'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+            'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+        ];
+        displayText = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
     }
     
     document.getElementById('current-month-year').textContent = displayText;

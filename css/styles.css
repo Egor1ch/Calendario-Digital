@@ -7,9 +7,7 @@
     --light-gray: #e5e5e5;
     --dark-gray: #86868b;
     --event-color: #FF5733;
-    --task-color: #33A8FF;
     --party-color: #33FF57;
-    --personal-color: #F3FF33;
     --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     --border-radius: 10px;
     --sidebar-width: 280px;
@@ -81,6 +79,56 @@ body {
     align-items: center;
     gap: 10px;
     color: var(--primary-color);
+}
+
+/* Estilos para la información del usuario */
+.user-info {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 10px;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--light-gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    color: var(--primary-color);
+    font-size: 24px;
+}
+
+.user-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    font-weight: 500;
+    margin-bottom: 3px;
+    color: var(--text-color);
+}
+
+.logout-btn {
+    color: var(--dark-gray);
+    font-size: 0.8rem;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.logout-btn:hover {
+    color: var(--primary-color);
+}
+
+.sidebar.collapsed .user-details {
+    display: none;
 }
 
 .create-event-btn {
@@ -286,6 +334,7 @@ body {
 .category-item {
     display: flex;
     align-items: center;
+    padding-right: 10px;
 }
 
 .category-item input[type="checkbox"] {
@@ -300,6 +349,7 @@ body {
     padding: 8px;
     border-radius: var(--border-radius);
     transition: background-color 0.2s;
+    flex: 1;
 }
 
 .category-item label:hover {
@@ -342,27 +392,15 @@ body {
 .toggles-container {
     display: flex;
     width: 100%;
-    justify-content: left;
+    justify-content: flex-start; /* Cambiar de center a flex-start para alinear a la izquierda */
     align-items: center;
-    gap: 10px;
-}
-
-.theme-toggle, .language-toggle {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    color: var(--dark-gray);
-}
-
-.language-toggle span {
-
-    font-weight: 500;
+    padding-left: 10px; /* Añadir un poco de padding a la izquierda */
 }
 
 .theme-toggle {
     display: flex;
     align-items: center;
-    justify-content: flex-start; /* Cambiar de center a flex-start */
+    justify-content: flex-start; /* Asegurar que el contenido interno esté alineado a la izquierda */
     gap: 10px;
     color: var(--dark-gray);
 }
@@ -435,10 +473,68 @@ input:checked + .slider:before {
     position: relative;
 }
 
-.current-date {
+/* Estilos para la cabecera del calendario y el usuario */
+.header-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 15px;
+    width: 100%;
+}
+
+.current-date {
     text-align: left;
     padding-left: 10px;
+    margin-bottom: 0; /* Anular el margen que tenía antes */
+}
+
+.user-info-top {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 5px 15px;
+    border-radius: var(--border-radius);
+    transition: background-color 0.2s;
+}
+
+.user-info-top:hover {
+    background-color: var(--hover-color);
+}
+
+.user-info-top .user-details {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.user-info-top .user-name {
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.user-info-top .logout-btn {
+    color: var(--dark-gray);
+    font-size: 0.8rem;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.user-info-top .logout-btn:hover {
+    color: var(--primary-color);
+}
+
+.user-info-top .user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--light-gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+    font-size: 24px;
 }
 
 .current-date h2 {
@@ -849,18 +945,8 @@ input:checked + .slider:before {
     color: white;
 }
 
-.event[data-category="task"], .week-event[data-category="task"], .day-event[data-category="task"] {
-    background-color: var(--task-color);
-    color: white;
-}
-
 .event[data-category="party"], .week-event[data-category="party"], .day-event[data-category="party"] {
     background-color: var(--party-color);
-    color: black;
-}
-
-.event[data-category="personal"], .week-event[data-category="personal"], .day-event[data-category="personal"] {
-    background-color: var(--personal-color);
     color: black;
 }
 
@@ -952,6 +1038,99 @@ input:checked + .slider:before {
     background-color: #ff3b30;
     color: white;
     display: none;
+}
+
+/* Añadir estos estilos para mensajes de error y éxito */
+.error-message, .success-message {
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.error-message {
+    background-color: rgba(255, 90, 90, 0.2);
+    border: 1px solid #ff5a5a;
+    color: #ff0000;
+}
+
+.success-message {
+    background-color: rgba(76, 175, 80, 0.2);
+    border: 1px solid #4CAF50;
+    color: #4CAF50;
+}
+
+/* Añadir estos estilos para la gestión de categorías personalizadas */
+
+.section-actions {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.add-category-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--dark-gray);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.add-category-btn:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.edit-category-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--dark-gray);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s, color 0.2s;
+    opacity: 0;
+    margin-left: auto;
+}
+
+.category-item:hover .edit-category-btn {
+    opacity: 1;
+}
+
+.edit-category-btn:hover {
+    background-color: var(--hover-color);
+    color: var(--primary-color);
+}
+
+/* Estilos para el picker de color */
+input[type="color"] {
+    -webkit-appearance: none;
+    width: 50px;
+    height: 50px;
+    border: none;
+    border-radius: var(--border-radius);
+    background: none;
+    cursor: pointer;
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+input[type="color"]::-webkit-color-swatch {
+    border: none;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
 }
 
 /* Responsive design */
