@@ -68,6 +68,9 @@ document.addEventListener('DOMContentLoaded', () => {
         showEventModal();
     });
     
+    // Añadir botón de toggle para sidebar en dispositivos móviles
+    createMobileSidebarToggle();
+    
     // Event listener para toggle del tema (claro/oscuro)
     document.getElementById('theme-toggle').addEventListener('change', toggleTheme);
     
@@ -779,4 +782,49 @@ function formatDate(date) {
 function handleDayClick(date) {
     currentDate = date;
     showEventModal(null, date);
+}
+
+// Función para crear el botón de toggle del sidebar en móviles
+function createMobileSidebarToggle() {
+    // Crear botón de toggle
+    const toggleBtn = document.createElement('button');
+    toggleBtn.classList.add('toggle-sidebar-btn');
+    toggleBtn.innerHTML = '<i class="fas fa-bars"></i>';
+    
+    // Crear overlay para cerrar sidebar al tocar fuera
+    const overlay = document.createElement('div');
+    overlay.classList.add('sidebar-overlay');
+    
+    // Añadir elementos al DOM
+    document.body.appendChild(toggleBtn);
+    document.body.appendChild(overlay);
+    
+    // Event listener para botón de toggle
+    toggleBtn.addEventListener('click', toggleSidebar);
+    
+    // Event listener para overlay
+    overlay.addEventListener('click', closeSidebar);
+}
+
+// Función para mostrar/ocultar el sidebar
+function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
+    
+    if (sidebar.classList.contains('show')) {
+        sidebar.classList.remove('show');
+        overlay.classList.remove('show');
+    } else {
+        sidebar.classList.add('show');
+        overlay.classList.add('show');
+    }
+}
+
+// Función para cerrar el sidebar
+function closeSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
+    
+    sidebar.classList.remove('show');
+    overlay.classList.remove('show');
 }

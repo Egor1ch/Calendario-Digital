@@ -38,6 +38,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- El botón toggle y overlay se añadirán dinámicamente desde JavaScript -->
     <div class="container">
         <aside class="sidebar">
             <div class="sidebar-header">
@@ -52,33 +53,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
                 <span>Crear evento</span>
             </button>
             
-            <div class="mini-calendar-wrapper">
-                <div class="mini-calendar" id="mini-calendar"></div>
-                <div class="mini-calendar-nav">
-                    <button id="mini-prev"><i class="fas fa-chevron-left"></i></button>
-                    <button id="mini-next"><i class="fas fa-chevron-right"></i></button>
-                </div>
-            </div>
-            
-            <div class="view-selector">
-                <button data-view="year">
-                    <i class="fas fa-calendar"></i>
-                    <span>Año</span>
-                </button>
-                <button class="active" data-view="month">
-                    <i class="fas fa-calendar-days"></i>
-                    <span>Mes</span>
-                </button>
-                <button data-view="week">
-                    <i class="fas fa-calendar-week"></i>
-                    <span>Semana</span>
-                </button>
-                <button data-view="day">
-                    <i class="fas fa-calendar-day"></i>
-                    <span>Día</span>
-                </button>
-            </div>
-            
+            <!-- Mover las categorías arriba del mini calendario -->
             <div class="categories-section">
                 <div class="section-header">
                     <h3>Categorías</h3>
@@ -105,6 +80,33 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
                         </label>
                     </div>
                     <!-- Las categorías personalizadas se añadirán aquí dinámicamente -->
+                </div>
+            </div>
+            
+            <div class="view-selector">
+                <button data-view="year">
+                    <i class="fas fa-calendar"></i>
+                    <span>Año</span>
+                </button>
+                <button class="active" data-view="month">
+                    <i class="fas fa-calendar-days"></i>
+                    <span>Mes</span>
+                </button>
+                <button data-view="week">
+                    <i class="fas fa-calendar-week"></i>
+                    <span>Semana</span>
+                </button>
+                <button data-view="day">
+                    <i class="fas fa-calendar-day"></i>
+                    <span>Día</span>
+                </button>
+            </div>
+            
+            <div class="mini-calendar-wrapper">
+                <div class="mini-calendar" id="mini-calendar"></div>
+                <div class="mini-calendar-nav">
+                    <button id="mini-prev"><i class="fas fa-chevron-left"></i></button>
+                    <button id="mini-next"><i class="fas fa-chevron-right"></i></button>
                 </div>
             </div>
             
