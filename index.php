@@ -44,7 +44,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
             <div class="sidebar-header">
                 <div class="logo">
                     <i class="fas fa-calendar-alt"></i>
-                    <h1>Calendario Digital</h1>
+                    <h1>Calendario</h1>
                 </div>
             </div>
             
@@ -53,7 +53,27 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
                 <span>Crear evento</span>
             </button>
             
-            <!-- Mover las categorías arriba del mini calendario -->
+            <!-- Mover el selector de vistas arriba de las categorías para móviles -->
+            <div class="view-selector">
+                <button data-view="year">
+                    <i class="fas fa-calendar"></i>
+                    <span>Año</span>
+                </button>
+                <button class="active" data-view="month">
+                    <i class="fas fa-calendar-days"></i>
+                    <span>Mes</span>
+                </button>
+                <button data-view="week">
+                    <i class="fas fa-calendar-week"></i>
+                    <span>Semana</span>
+                </button>
+                <button data-view="day">
+                    <i class="fas fa-calendar-day"></i>
+                    <span>Día</span>
+                </button>
+            </div>
+            
+            <!-- Categorías ahora van después del selector de vistas -->
             <div class="categories-section">
                 <div class="section-header">
                     <h3>Categorías</h3>
@@ -83,25 +103,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
                 </div>
             </div>
             
-            <div class="view-selector">
-                <button data-view="year">
-                    <i class="fas fa-calendar"></i>
-                    <span>Año</span>
-                </button>
-                <button class="active" data-view="month">
-                    <i class="fas fa-calendar-days"></i>
-                    <span>Mes</span>
-                </button>
-                <button data-view="week">
-                    <i class="fas fa-calendar-week"></i>
-                    <span>Semana</span>
-                </button>
-                <button data-view="day">
-                    <i class="fas fa-calendar-day"></i>
-                    <span>Día</span>
-                </button>
-            </div>
-            
+            <!-- Mini calendario ahora después de categorías, será ocultado en móviles por CSS -->
             <div class="mini-calendar-wrapper">
                 <div class="mini-calendar" id="mini-calendar"></div>
                 <div class="mini-calendar-nav">

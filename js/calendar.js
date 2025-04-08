@@ -52,16 +52,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
-    // Event listeners para navegación del mini calendario
-    document.getElementById('mini-prev').addEventListener('click', () => {
-        miniCalendarDate = new Date(miniCalendarDate.getFullYear(), miniCalendarDate.getMonth() - 1, 1);
-        renderMiniCalendar();
-    });
+    // Verificar si es dispositivo móvil antes de inicializar mini calendario
+    if (window.innerWidth > 900) {
+        // Solo inicializar mini calendario en dispositivos de escritorio
+        initializeMiniCalendar();
+    }
     
-    document.getElementById('mini-next').addEventListener('click', () => {
-        miniCalendarDate = new Date(miniCalendarDate.getFullYear(), miniCalendarDate.getMonth() + 1, 1);
-        renderMiniCalendar();
-    });
+    // Detectar cambio de tamaño de ventana para mostrar/ocultar mini calendario
+    window.addEventListener('resize', handleWindowResize);
     
     // Event listener para botón de crear evento en la barra lateral
     document.getElementById('create-event-sidebar').addEventListener('click', () => {
@@ -88,10 +86,46 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Event listener para sección de categorías (expandir/colapsar)
     document.querySelector('.toggle-section').addEventListener('click', toggleCategoriesSection);
+});
+
+// Función para manejar cambio de tamaño de ventana
+function handleWindowResize() {
+    const miniCalendarWrapper = document.querySelector('.mini-calendar-wrapper');
+    
+    if (window.innerWidth <= 900) {
+        // En móviles, ocultar mini calendario
+        if (miniCalendarWrapper) {
+            miniCalendarWrapper.style.display = 'none';
+        }
+    } else {
+        // En escritorio, mostrar mini calendario
+        if (miniCalendarWrapper) {
+            miniCalendarWrapper.style.display = 'block';
+            
+            // Si no se ha inicializado aún, inicializarlo
+            if (!document.querySelector('.mini-days-container')) {
+                renderMiniCalendar();
+            }
+        }
+    }
+}
+
+// Función para inicializar mini calendario (event listeners)
+function initializeMiniCalendar() {
+    // Event listeners para navegación del mini calendario
+    document.getElementById('mini-prev').addEventListener('click', () => {
+        miniCalendarDate = new Date(miniCalendarDate.getFullYear(), miniCalendarDate.getMonth() - 1, 1);
+        renderMiniCalendar();
+    });
+    
+    document.getElementById('mini-next').addEventListener('click', () => {
+        miniCalendarDate = new Date(miniCalendarDate.getFullYear(), miniCalendarDate.getMonth() + 1, 1);
+        renderMiniCalendar();
+    });
     
     // Inicializar mini calendario
     renderMiniCalendar();
-});
+}
 
 // Función para alternar entre tema claro y oscuro
 function toggleTheme(e) {
@@ -251,6 +285,11 @@ function updateCalendar() {
     } else if (currentView === 'day') {
         renderEventsInDayView();
     }
+    
+    // Actualizar mini calendario solo si estamos en escritorio
+    if (window.innerWidth > 900 && document.querySelector('.mini-calendar-wrapper').style.display !== 'none') {
+        renderMiniCalendar();
+    }
 }
 
 // Actualizar el encabezado del calendario
@@ -285,12 +324,16 @@ function navigateCalendar(direction) {
         case 'month':
             if (direction === 'prev') {
                 currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
-                // Actualizar mini-calendario cuando se cambia en la vista mensual
-                miniCalendarDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+                // Actualizar mini-calendario solo en escritorio
+                if (window.innerWidth > 900) {
+                    miniCalendarDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+                }
             } else {
                 currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
-                // Actualizar mini-calendario cuando se cambia en la vista mensual
-                miniCalendarDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+                // Actualizar mini-calendario solo en escritorio
+                if (window.innerWidth > 900) {
+                    miniCalendarDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+                }
             }
             break;
         case 'week':

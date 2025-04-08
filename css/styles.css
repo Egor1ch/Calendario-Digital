@@ -1155,6 +1155,8 @@ input[type="color"]::-webkit-color-swatch {
         transition: transform 0.3s ease;
         box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
         width: 250px;
+        display: flex;
+        flex-direction: column;
     }
 
     .sidebar.show {
@@ -1270,6 +1272,27 @@ input[type="color"]::-webkit-color-swatch {
 
     .year-day {
         font-size: 0.7rem;
+    }
+
+    /* Ocultar mini calendario en dispositivos móviles */
+    .mini-calendar-wrapper {
+        display: none;
+    }
+    
+    /* Ajustar espaciado ya que no hay mini calendario */
+    .categories-section {
+        margin-bottom: 5px;
+        flex: 2;
+    }
+    
+    /* Eliminar la barra inferior del selector de vistas ya que está más abajo */
+    .view-selector {
+        border-bottom: none;
+    }
+    
+    /* Ajustar el pie del sidebar */
+    .sidebar-footer {
+        margin-top: auto;
     }
 }
 
@@ -1419,5 +1442,19 @@ input[type="color"]::-webkit-color-swatch {
 @media (max-width: 600px) {
     .year-grid {
         grid-template-columns: 1fr;
+    }
+}
+
+/* Optimizaciones específicas para pantallas muy pequeñas (iPhone SE, etc.) */
+@media (max-width: 375px) {
+    /* Otros ajustes para pantallas muy pequeñas */
+    .create-event-btn {
+        margin: 10px 15px;
+        padding: 8px 15px;
+    }
+    
+    /* Acortar título en cabecera */
+    .logo h1 {
+        font-size: 1.2rem;
     }
 }

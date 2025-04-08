@@ -24,6 +24,27 @@
                 <span>Crear evento</span>
             </button>
             
+            <!-- Mover el selector de vistas arriba de las categorías para móviles -->
+            <div class="view-selector">
+                <button data-view="year">
+                    <i class="fas fa-calendar"></i>
+                    <span>Año</span>
+                </button>
+                <button class="active" data-view="month">
+                    <i class="fas fa-calendar-days"></i>
+                    <span>Mes</span>
+                </button>
+                <button data-view="week">
+                    <i class="fas fa-calendar-week"></i>
+                    <span>Semana</span>
+                </button>
+                <button data-view="day">
+                    <i class="fas fa-calendar-day"></i>
+                    <span>Día</span>
+                </button>
+            </div>
+            
+            <!-- Categorías ahora van después del selector de vistas -->
             <div class="categories-section">
                 <div class="section-header">
                     <h3>Mis calendarios</h3>
@@ -61,31 +82,13 @@
                 </div>
             </div>
             
+            <!-- Mini calendario ahora después de categorías, será ocultado en móviles por CSS -->
             <div class="mini-calendar-wrapper">
                 <div class="mini-calendar" id="mini-calendar"></div>
                 <div class="mini-calendar-nav">
                     <button id="mini-prev"><i class="fas fa-chevron-left"></i></button>
                     <button id="mini-next"><i class="fas fa-chevron-right"></i></button>
                 </div>
-            </div>
-            
-            <div class="view-selector">
-                <button data-view="year">
-                    <i class="fas fa-calendar"></i>
-                    <span>Año</span>
-                </button>
-                <button class="active" data-view="month">
-                    <i class="fas fa-calendar-days"></i>
-                    <span>Mes</span>
-                </button>
-                <button data-view="week">
-                    <i class="fas fa-calendar-week"></i>
-                    <span>Semana</span>
-                </button>
-                <button data-view="day">
-                    <i class="fas fa-calendar-day"></i>
-                    <span>Día</span>
-                </button>
             </div>
             
             <div class="sidebar-footer">
