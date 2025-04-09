@@ -264,6 +264,9 @@ function renderMiniCalendar() {
 
 // Actualizar el calendario según la vista actual
 function updateCalendar() {
+    // Primero actualizamos el encabezado para asegurar que se muestre la fecha correcta
+    updateHeader();
+    
     switch (currentView) {
         case 'year':
             renderYearView();
@@ -278,6 +281,7 @@ function updateCalendar() {
             renderDayView();
             break;
     }
+    
     // Renderizar eventos en vista activa
     renderEvents();
     if (currentView === 'week') {
@@ -292,20 +296,51 @@ function updateCalendar() {
     }
 }
 
-// Actualizar el encabezado del calendario
+// Actualizar el encabezado del calendario con más detalle por cada vista
 function updateHeader() {
     let displayText;
     
     if (currentView === 'year') {
-        // Modificar para que muestre "Año" seguido del año correspondiente
+        // Vista de año: mostrar solo el año
         displayText = `Año ${currentDate.getFullYear()}`;
-    } else {
-        // Mantener el formato actual para otras vistas
+    } else if (currentView === 'month') {
+        // Vista de mes: mostrar mes y año
         const monthNames = [
             'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
             'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
         ];
         displayText = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+    } else if (currentView === 'week') {
+        // Vista de semana: mostrar rango de fechas de la semana
+        // Obtener el lunes de la semana actual
+        const currentDay = currentDate.getDay(); // 0 = Dom, 1 = Lun, ...
+        const mondayOffset = currentDay === 0 ? -6 : 1 - currentDay;
+        const monday = new Date(currentDate);
+        monday.setDate(currentDate.getDate() + mondayOffset);
+        
+        // Obtener el domingo
+        const sunday = new Date(monday);
+        sunday.setDate(monday.getDate() + 6);
+        
+        // Formatear las fechas
+        const mondayStr = monday.getDate();
+        const sundayStr = sunday.getDate();
+        const monthNames = [
+            'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+            'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+        ];
+        
+        // Si la semana abarca dos meses diferentes
+        if (monday.getMonth() !== sunday.getMonth()) {
+            displayText = `${mondayStr} ${monthNames[monday.getMonth()]} - ${sundayStr} ${monthNames[sunday.getMonth()]} ${currentDate.getFullYear()}`;
+        } else {
+            displayText = `${mondayStr} - ${sundayStr} ${monthNames[monday.getMonth()]} ${currentDate.getFullYear()}`;
+        }
+    } else {
+        // Vista de día: mostrar día completo
+        const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+        const formattedDate = currentDate.toLocaleDateString('es-ES', options);
+        displayText = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
     }
     
     document.getElementById('current-month-year').textContent = displayText;

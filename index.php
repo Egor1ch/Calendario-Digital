@@ -48,6 +48,17 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
                 </div>
             </div>
             
+            <!-- Información del usuario movida aquí para móviles y escritorio -->
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="user-details">
+                    <span class="user-name"><?php echo htmlspecialchars($_SESSION["nombre"]); ?></span>
+                    <a href="auth/logout.php" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+                </div>
+            </div>
+            
             <button id="create-event-sidebar" class="create-event-btn">
                 <i class="fas fa-plus"></i>
                 <span>Crear evento</span>
@@ -130,17 +141,6 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
                 <div class="header-top-row">
                     <div class="current-date">
                         <h2 id="current-month-year"></h2>
-                    </div>
-                    
-                    <!-- Información del usuario en la parte superior derecha -->
-                    <div class="user-info-top">
-                        <div class="user-details">
-                            <span class="user-name"><?php echo htmlspecialchars($_SESSION["nombre"]); ?></span>
-                            <a href="auth/logout.php" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
-                        </div>
-                        <div class="user-avatar">
-                            <i class="fas fa-user-circle"></i>
-                        </div>
                     </div>
                 </div>
                 

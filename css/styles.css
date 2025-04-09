@@ -131,6 +131,57 @@ body {
     display: none;
 }
 
+/* Información del usuario en el escritorio */
+.user-info-desktop {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 5px 15px;
+    border-radius: var(--border-radius);
+    transition: background-color 0.2s;
+}
+
+.user-info-desktop:hover {
+    background-color: var(--hover-color);
+}
+
+.user-info-desktop .user-details {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.user-info-desktop .user-name {
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.user-info-desktop .logout-btn {
+    color: var(--dark-gray);
+    font-size: 0.8rem;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.user-info-desktop .logout-btn:hover {
+    color: var(--primary-color);
+}
+
+.user-info-desktop .user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--light-gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+    font-size: 24px;
+    margin-right: 0;
+}
+
 .create-event-btn {
     margin: 15px 20px;
     background-color: var(--primary-color);
@@ -761,7 +812,7 @@ input:checked + .slider:before {
     padding: 10px;
     text-align: center;
     font-weight: 500;
-    color: var(--dark-gray);
+    color: var (--dark-gray);
     font-size: 0.9rem;
     border-right: 1px solid var(--border-color);
 }
@@ -1293,6 +1344,16 @@ input[type="color"]::-webkit-color-swatch {
     /* Ajustar el pie del sidebar */
     .sidebar-footer {
         margin-top: auto;
+    }
+
+    /* Ocultar información de usuario en escritorio en móviles */
+    .user-info-desktop {
+        display: none;
+    }
+    
+    /* Mostrar info de usuario en sidebar para móviles */
+    .user-info {
+        display: flex;
     }
 }
 

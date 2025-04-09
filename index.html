@@ -19,6 +19,17 @@
                 </div>
             </div>
             
+            <!-- Información del usuario siempre visible en el sidebar -->
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="user-details">
+                    <span class="user-name">Usuario</span>
+                    <a href="#" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+                </div>
+            </div>
+            
             <button id="create-event-sidebar" class="create-event-btn">
                 <i class="fas fa-plus"></i>
                 <span>Crear evento</span>
@@ -115,8 +126,10 @@
         </aside>
         <main class="calendar-container">
             <div class="calendar-header">
-                <div class="current-date">
-                    <h2 id="current-month-year"></h2>
+                <div class="header-top-row">
+                    <div class="current-date">
+                        <h2 id="current-month-year"></h2>
+                    </div>
                 </div>
                 <div class="calendar-nav">
                     <button id="prev-btn"><i class="fas fa-chevron-left"></i></button>
