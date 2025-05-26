@@ -1,7 +1,6 @@
 <?php
 require_once "../db/config.php";
 
-// Comprobar si se proporciona un token
 if (!isset($_GET['token']) || empty($_GET['token'])) {
     header("Location: ../login.php?error=" . urlencode("Enlace no válido o expirado."));
     exit();
@@ -11,15 +10,12 @@ $token = $_GET['token'];
 $token_hash = hash('sha256', $token);
 
 try {
-    // Verificar primero si las columnas existen
     $columnCheck = $conn->query("SHOW COLUMNS FROM usuarios LIKE 'reset_token'");
     if ($columnCheck->rowCount() == 0) {
-        // Redirigir a una página para actualizar la base de datos
         header("Location: ../db/actualizar_bd.php");
         exit();
     }
     
-    // Verificar si el token existe y no ha expirado
     $stmt = $conn->prepare("SELECT id, nombre FROM usuarios WHERE reset_token = ? AND token_expires_at > NOW()");
     $stmt->execute([$token_hash]);
     
@@ -30,13 +26,11 @@ try {
     
     $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    // Si hay un error relacionado con la columna no encontrada
     if (strpos($e->getMessage(), "Column not found") !== false || 
         strpos($e->getMessage(), "Unknown column") !== false) {
         header("Location: ../db/actualizar_bd.php");
         exit();
     } else {
-        // Otro tipo de error
         header("Location: ../login.php?error=" . urlencode("Error en el sistema. Por favor, inténtalo más tarde."));
         exit();
     }

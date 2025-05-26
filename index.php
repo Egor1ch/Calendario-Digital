@@ -1,9 +1,7 @@
 <?php
 session_start();
 
-// Verificar si el usuario ha iniciado sesión
 if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
-    // Verificar si existe una cookie de "recordarme"
     if (isset($_COOKIE["remember_token"])) {
         require_once "db/config.php";
         
@@ -38,24 +36,12 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- El botón toggle y overlay se añadirán dinámicamente desde JavaScript -->
     <div class="container">
         <aside class="sidebar">
             <div class="sidebar-header">
                 <div class="logo">
                     <i class="fas fa-calendar-alt"></i>
-                    <h1>Calendario</h1>
-                </div>
-            </div>
-            
-            <!-- Información del usuario movida aquí para móviles y escritorio -->
-            <div class="user-info">
-                <div class="user-avatar">
-                    <i class="fas fa-user-circle"></i>
-                </div>
-                <div class="user-details">
-                    <span class="user-name"><?php echo htmlspecialchars($_SESSION["nombre"]); ?></span>
-                    <a href="auth/logout.php" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+                    <h1>Calendario Digital</h1>
                 </div>
             </div>
             
@@ -64,7 +50,14 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
                 <span>Crear evento</span>
             </button>
             
-            <!-- Mover el selector de vistas arriba de las categorías para móviles -->
+            <div class="mini-calendar-wrapper">
+                <div class="mini-calendar" id="mini-calendar"></div>
+                <div class="mini-calendar-nav">
+                    <button id="mini-prev"><i class="fas fa-chevron-left"></i></button>
+                    <button id="mini-next"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+            
             <div class="view-selector">
                 <button data-view="year">
                     <i class="fas fa-calendar"></i>
@@ -84,7 +77,6 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
                 </button>
             </div>
             
-            <!-- Categorías ahora van después del selector de vistas -->
             <div class="categories-section">
                 <div class="section-header">
                     <h3>Categorías</h3>
@@ -110,16 +102,6 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
                             <span>Fiestas</span>
                         </label>
                     </div>
-                    <!-- Las categorías personalizadas se añadirán aquí dinámicamente -->
-                </div>
-            </div>
-            
-            <!-- Mini calendario ahora después de categorías, será ocultado en móviles por CSS -->
-            <div class="mini-calendar-wrapper">
-                <div class="mini-calendar" id="mini-calendar"></div>
-                <div class="mini-calendar-nav">
-                    <button id="mini-prev"><i class="fas fa-chevron-left"></i></button>
-                    <button id="mini-next"><i class="fas fa-chevron-right"></i></button>
                 </div>
             </div>
             
@@ -141,6 +123,16 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
                 <div class="header-top-row">
                     <div class="current-date">
                         <h2 id="current-month-year"></h2>
+                    </div>
+                    
+                    <div class="user-info-top">
+                        <div class="user-details">
+                            <span class="user-name"><?php echo htmlspecialchars($_SESSION["nombre"]); ?></span>
+                            <a href="auth/logout.php" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+                        </div>
+                        <div class="user-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
                     </div>
                 </div>
                 
@@ -172,7 +164,6 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
         </main>
     </div>
 
-    <!-- Modal para añadir/editar eventos -->
     <div class="modal" id="event-modal">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
@@ -197,7 +188,6 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
                     <select id="event-category">
                         <option value="event">Evento</option>
                         <option value="party">Fiesta</option>
-                        <!-- Las categorías personalizadas se añadirán aquí dinámicamente -->
                     </select>
                 </div>
                 <div class="form-group">
@@ -212,7 +202,6 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
         </div>
     </div>
 
-    <!-- Modal para añadir/editar categorías -->
     <div class="modal" id="category-modal">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
@@ -233,10 +222,9 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
                 </div>
             </form>
         </div>
-    </div>
-
-    <script src="js/calendar.js"></script>
+    </div>    <script src="js/calendar.js"></script>
     <script src="js/categories.js"></script>
     <script src="js/events.js"></script>
+    <script src="js/viewNavigation.js"></script>
 </body>
 </html>

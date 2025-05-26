@@ -29,7 +29,6 @@
                         echo '<div class="error-message">' . htmlspecialchars($_GET['error']) . '</div>';
                     }
                     if (isset($_GET['success'])) {
-                        // Permitir HTML en el mensaje de éxito para mostrar enlaces
                         echo '<div class="success-message">' . $_GET['success'] . '</div>';
                     }
                     ?>
@@ -77,7 +76,6 @@
     </div>
 
     <script>
-        // Cambiar entre pestañas de inicio de sesión y registro
         const tabBtns = document.querySelectorAll('.tab-btn');
         const tabContents = document.querySelectorAll('.tab-content');
         
@@ -85,17 +83,14 @@
             btn.addEventListener('click', () => {
                 const tab = btn.dataset.tab;
                 
-                // Cambiar clase activa de botones
                 tabBtns.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 
-                // Mostrar contenido de pestaña correspondiente
                 tabContents.forEach(content => content.classList.remove('active'));
                 document.getElementById(`${tab}-tab`).classList.add('active');
             });
         });
 
-        // Validación de formulario de registro
         document.getElementById('register-form').addEventListener('submit', function(e) {
             const password = document.getElementById('register-password').value;
             const confirmPassword = document.getElementById('register-confirm-password').value;

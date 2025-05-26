@@ -2,7 +2,6 @@
 session_start();
 require_once "../db/config.php";
 
-// Verificar si el usuario ha iniciado sesión
 if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     echo json_encode(['success' => false, 'message' => 'No has iniciado sesión']);
     exit;
@@ -11,7 +10,6 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 $usuario_id = $_SESSION["id"];
 $action = isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GET['action'] : '');
 
-// Manejar diferentes acciones
 switch ($action) {
     case 'create':
         createEvent($conn, $usuario_id);
@@ -30,24 +28,21 @@ switch ($action) {
         break;
 }
 
-// Función para crear un nuevo evento
+
 function createEvent($conn, $usuario_id) {
     try {
-        // Obtener datos del evento
         $titulo = $_POST['title'];
         $fecha = $_POST['date'];
         $hora = isset($_POST['time']) && !empty($_POST['time']) ? $_POST['time'] : null;
         $categoria = $_POST['category'];
         $descripcion = isset($_POST['description']) ? $_POST['description'] : '';
         
-        // Preparar consulta SQL
         $sql = "INSERT INTO eventos (usuario_id, titulo, fecha, hora, categoria, descripcion) 
                 VALUES (?, ?, ?, ?, ?, ?)";
         
         $stmt = $conn->prepare($sql);
         $stmt->execute([$usuario_id, $titulo, $fecha, $hora, $categoria, $descripcion]);
         
-        // Obtener el ID del evento recién creado
         $event_id = $conn->lastInsertId();
         
         echo json_encode([
@@ -67,10 +62,8 @@ function createEvent($conn, $usuario_id) {
     }
 }
 
-// Función para actualizar un evento existente
 function updateEvent($conn, $usuario_id) {
     try {
-        // Obtener datos del evento
         $id = $_POST['id'];
         $titulo = $_POST['title'];
         $fecha = $_POST['date'];
@@ -78,7 +71,6 @@ function updateEvent($conn, $usuario_id) {
         $categoria = $_POST['category'];
         $descripcion = isset($_POST['description']) ? $_POST['description'] : '';
         
-        // Verificar si el evento pertenece al usuario
         $check_sql = "SELECT id FROM eventos WHERE id = ? AND usuario_id = ?";
         $check_stmt = $conn->prepare($check_sql);
         $check_stmt->execute([$id, $usuario_id]);
@@ -88,7 +80,6 @@ function updateEvent($conn, $usuario_id) {
             return;
         }
         
-        // Preparar consulta SQL
         $sql = "UPDATE eventos SET titulo = ?, fecha = ?, hora = ?, categoria = ?, descripcion = ? 
                 WHERE id = ? AND usuario_id = ?";
         
@@ -112,13 +103,11 @@ function updateEvent($conn, $usuario_id) {
     }
 }
 
-// Función para eliminar un evento
+
 function deleteEvent($conn, $usuario_id) {
     try {
-        // Obtener ID del evento
         $id = isset($_POST['id']) ? $_POST['id'] : $_GET['id'];
         
-        // Verificar si el evento pertenece al usuario
         $check_sql = "SELECT id FROM eventos WHERE id = ? AND usuario_id = ?";
         $check_stmt = $conn->prepare($check_sql);
         $check_stmt->execute([$id, $usuario_id]);
@@ -128,7 +117,6 @@ function deleteEvent($conn, $usuario_id) {
             return;
         }
         
-        // Preparar consulta SQL
         $sql = "DELETE FROM eventos WHERE id = ? AND usuario_id = ?";
         
         $stmt = $conn->prepare($sql);
@@ -140,10 +128,8 @@ function deleteEvent($conn, $usuario_id) {
     }
 }
 
-// Función para obtener todos los eventos del usuario
 function getAllEvents($conn, $usuario_id) {
     try {
-        // Preparar consulta SQL
         $sql = "SELECT id, titulo, fecha, hora, categoria, descripcion FROM eventos WHERE usuario_id = ?";
         
         $stmt = $conn->prepare($sql);

@@ -1,31 +1,14 @@
 <?php
-/**
- * Envía un correo electrónico.
- * 
- * @param string $destinatario Dirección de correo del destinatario
- * @param string $asunto Asunto del correo
- * @param string $mensaje Cuerpo del mensaje (puede ser HTML)
- * @return bool Resultado de la operación
- */
+/*Enviar correo*/
 function enviarCorreo($destinatario, $asunto, $mensaje) {
-    // Configuración de cabeceras para envío HTML
     $cabeceras = "MIME-Version: 1.0" . "\r\n";
     $cabeceras .= "Content-type:text/html;charset=UTF-8" . "\r\n";
     $cabeceras .= "From: Calendario Digital <info@localhost>" . "\r\n";
     
-    // Intenta enviar el correo
     return mail($destinatario, $asunto, $mensaje, $cabeceras);
 }
 
-/**
- * Genera el mensaje de confirmación de cuenta
- * 
- * @param string $nombre Nombre del usuario
- * @param string $token Token de verificación
- * @return string Mensaje HTML formateado
- */
 function generarMensajeConfirmacion($nombre, $token) {
-    // URL base del proyecto (ajustar según entorno)
     $baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
     $urlVerificacion = $baseUrl . "/auth/verify_email.php?token=" . $token;
     
@@ -102,12 +85,6 @@ function generarMensajeConfirmacion($nombre, $token) {
     return $mensaje;
 }
 
-/**
- * Genera el mensaje de bienvenida
- * 
- * @param string $nombre Nombre del usuario
- * @return string Mensaje HTML formateado
- */
 function generarMensajeBienvenida($nombre) {
     $mensaje = '
     <!DOCTYPE html>
@@ -199,13 +176,7 @@ function generarMensajeBienvenida($nombre) {
     return $mensaje;
 }
 
-/**
- * Genera el mensaje para recuperación de contraseña
- * 
- * @param string $nombre Nombre del usuario
- * @param string $resetUrl URL para restablecer la contraseña
- * @return string Mensaje HTML formateado
- */
+
 function generarMensajeRecuperacion($nombre, $resetUrl) {
     $mensaje = '
     <!DOCTYPE html>
